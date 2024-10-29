@@ -28,4 +28,19 @@ pipeline {
                 echo 'Pushing Docker image to the registry...'
                 script {
                     // Log in to Docker registry
-                    docker.withRegistry("
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                        // Push the Docker image
+                        docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Cleaning up Docker images...'
+            sh "docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID} || true"
+        }
+    }
+}

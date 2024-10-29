@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKER_REGISTRY = 'docker.io'                          // Docker registry URL for Docker Hub
-        DOCKER_IMAGE = 'nageshbnr/mynewlab'                    // Your DockerHub username and image name
-        DOCKER_CREDENTIALS_ID = '000c38ce-2745-4c41-94ef-86c2d44dc29d'  // Updated Jenkins credentials ID for Docker registry
+        DOCKER_IMAGE = 'gandhinagar/cicdtest'                  // Your DockerHub public repository name
+        DOCKER_CREDENTIALS_ID = '000c38ce-2745-4c41-94ef-86c2d44dc29d'  // Jenkins credentials ID for Docker registry
     }
     stages {
         stage('Checkout') {

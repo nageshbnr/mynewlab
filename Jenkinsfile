@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'docker.io'                          // Docker registry URL for Docker Hub
         DOCKER_IMAGE = 'gandhinagar/cicdtest'                  // Your DockerHub public repository name
-        DOCKER_CREDENTIALS_ID = '000c38ce-2745-4c41-94ef-86c2d44dc29d'  // Jenkins credentials ID for Docker registry
+        DOCKER_CREDENTIALS_ID = 'bc959098-797a-410e-9eed-355ecf7974fe'  // Jenkins credentials ID for Docker registry
     }
     stages {
         stage('Checkout') {

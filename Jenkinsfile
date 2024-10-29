@@ -1,37 +1,51 @@
 pipeline {
     agent any
+    
     environment {
-        DOCKER_REGISTRY = 'docker.io'                          // Docker registry URL for Docker Hub
-        DOCKER_IMAGE = 'gandhinagar/cicdtest'                  // Your DockerHub public repository name
-        DOCKER_CREDENTIALS_ID = 'bc959098-797a-410e-9eed-355ecf7974fe'  // Jenkins credentials ID for Docker registry
+        DOCKER_USER = credentials(‘bc959098-797a-410e-9eed-355ecf7974fe’) // Jenkins credential ID for Docker username
+        DOCKER_PASS = credentials('bc959098-797a-410e-9eed-355ecf7974fe') // Jenkins credential ID for Docker password
+        DOCKER_IMAGE = ‘gandhinagar/nodejstest // Replace with your Docker ID and image name
     }
+    
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out the code...'
                 checkout scm
             }
         }
         
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
                 script {
-                    // Build the Docker image from the Dockerfile in the repository
-                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}")
+                    // Build Docker image
+                    sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_ID} ."
                 }
             }
         }
         
-        stage('Upload to Docker Registry') {
+        stage('Login to Docker Hub') {
             steps {
-                echo 'Pushing Docker image to the registry...'
                 script {
-                    // Log in to Docker registry
-                    docker.withRegistry("https://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
-                        // Push the Docker image
-                        docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}").push()
-                    }
+                    // Login to Docker Hub
+                    sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+                }
+            }
+        }
+        
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    // Push Docker image
+                    sh "docker push ${DOCKER_IMAGE}:${env.BUILD_ID}"
+                }
+            }
+        }
+        
+        stage('Cleanup') {
+            steps {
+                script {
+                    // Cleanup Docker images from local
+                    sh "docker rmi ${DOCKER_IMAGE}:${env.BUILD_ID}"
                 }
             }
         }
@@ -39,8 +53,8 @@ pipeline {
     
     post {
         always {
-            echo 'Cleaning up Docker images...'
-            sh "docker rmi ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID} || true"
+            // Logout of Docker Hub
+            sh "docker logout"
         }
     }
 }

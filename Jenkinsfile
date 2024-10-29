@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_USER = credentials(‘bc959098-797a-410e-9eed-355ecf7974fe’) // Jenkins credential ID for Docker username
         DOCKER_PASS = credentials('bc959098-797a-410e-9eed-355ecf7974fe') // Jenkins credential ID for Docker password
-        DOCKER_IMAGE = ‘gandhinagar/nodejstest // Replace with your Docker ID and image name
+        DOCKER_IMAGE = ‘gandhinagar/nodejstest' // Replace with your Docker ID and image name
     }
     
     stages {

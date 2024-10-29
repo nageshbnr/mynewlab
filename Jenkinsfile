@@ -5,6 +5,7 @@ pipeline {
         DOCKER_USER = credentials('bc959098-797a-410e-9eed-355ecf7974fe') // Jenkins credential ID for Docker username
         DOCKER_PASS = credentials('bc959098-797a-410e-9eed-355ecf7974fe') // Jenkins credential ID for Docker password
         DOCKER_IMAGE = 'gandhinagar/nodejstest' // Replace with your Docker ID and image name
+        DOCKER_REGISTRY = 'https://registry-1.docker.io' // Docker Hub URL
     }
     
     stages {
@@ -23,11 +24,11 @@ pipeline {
             }
         }
         
-        stage('Login to Docker Hub') {
+        stage('Login to Docker Registry') {
             steps {
                 script {
-                    // Login to Docker Hub
-                    sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+                    // Login to Docker Registry (Docker Hub)
+                    sh "echo ${DOCKER_PASS} | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USER} --password-stdin"
                 }
             }
         }
@@ -53,8 +54,8 @@ pipeline {
     
     post {
         always {
-            // Logout of Docker Hub
-            sh "docker logout"
+            // Logout of Docker Registry
+            sh "docker logout ${DOCKER_REGISTRY}"
         }
     }
 }
